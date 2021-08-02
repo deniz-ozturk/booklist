@@ -21,6 +21,12 @@ class UI {
             }
         ];
         
+    /*static clearFields() {
+        document.querySelector('#titleField').value = '';
+        document.querySelector('#authorField').value = '';
+        document.querySelector('#isbnField').value = '';
+    } */
+
         const books = storedBooks;
 
         books.forEach((book) => UI.addBookToList(book));
@@ -43,7 +49,18 @@ class UI {
 }
 
 function addBook() {
-    const title = document.querySelector('#title');
+    // get values from fields
+    const title = document.querySelector('#titleField').value;
+    const author = document.querySelector('#authorField').value;
+    const isbn = document.querySelector('#isbnField').value;
+
+    // instantiate book
+    const aBook = new Book(title, author, isbn);
+    // add book to the page
+    UI.addBookToList(aBook);
+    
+    //UI.clearFields();
+    
 }
 
 
