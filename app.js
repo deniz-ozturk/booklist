@@ -20,17 +20,16 @@ class UI {
                 isbn: '54321'
             }
         ];
-        
-    /*static clearFields() {
+
+        const books = storedBooks;
+        books.forEach((book) => UI.addBookToList(book));
+    };   
+    
+    static clearFields() {
         document.querySelector('#titleField').value = '';
         document.querySelector('#authorField').value = '';
         document.querySelector('#isbnField').value = '';
-    } */
-
-        const books = storedBooks;
-
-        books.forEach((book) => UI.addBookToList(book));
-    }
+    };
 
     static addBookToList(book) {
         const list = document.querySelector('#book-list');
@@ -46,23 +45,51 @@ class UI {
 
         list.appendChild(row);
     }
+
+    static deleteBook(element) {
+        // only delete if what is being clicked contains class 'delete' i.e. is a delete button
+        if (element.classList.contains('delete')) {
+            element.parentElement.parentElement.remove();
+        }
+    };
+
+    static showAlert(text, alertType) {
+        const div = document.createElement('div');
+        div.className = `alert alert-${alertType}`;
+        const textNode = documnt.createTextNode(text);
+        div.appendChild(textNode);
+        const container = document.querySelector('#main');
+        const form = document.querySelector('#book-form');
+        container.insertBefore(div, form);
+    };
+
 }
 
-function addBook() {
+document.addEventListener('DOMContentLoaded', UI.displayBooks);
+
+document.querySelector('#book-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
     // get values from fields
     const title = document.querySelector('#titleField').value;
     const author = document.querySelector('#authorField').value;
     const isbn = document.querySelector('#isbnField').value;
 
-    // instantiate book
-    const aBook = new Book(title, author, isbn);
-    // add book to the page
-    UI.addBookToList(aBook);
+    // check that they aren't empty before continuing
+    if (title === '' || author === '' || isbn === '') {
+        UI.showAlert('One or more fields are empty', 'danger');
+    } else {
+        // instantiate book
+        const aBook = new Book(title, author, isbn);
+        // add book to the page
+        UI.addBookToList(aBook);
     
-    //UI.clearFields();
-    
-}
+        UI.clearFields();
+    };
 
 
-document.addEventListener('DOMContentLoaded', UI.displayBooks);
-document.querySelector('#book-form').addEventListener('submit', addBook)
+});
+
+document.querySelector('#book-list').addEventListener('click', (e) => {
+    UI.deleteBook(e.target);
+});
