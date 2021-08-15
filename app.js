@@ -50,17 +50,21 @@ class UI {
         // only delete if what is being clicked contains class 'delete' i.e. is a delete button
         if (element.classList.contains('delete')) {
             element.parentElement.parentElement.remove();
+            UI.showAlert('Book removed successfully', 'danger');
         }
     };
 
     static showAlert(text, alertType) {
         const div = document.createElement('div');
         div.className = `alert alert-${alertType}`;
-        const textNode = documnt.createTextNode(text);
+        const textNode = document.createTextNode(text);
         div.appendChild(textNode);
         const container = document.querySelector('#main');
         const form = document.querySelector('#book-form');
         container.insertBefore(div, form);
+
+        // vanish
+        setTimeout(() => document.querySelector('.alert').remove(), 3000)
     };
 
 }
@@ -83,8 +87,9 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
         const aBook = new Book(title, author, isbn);
         // add book to the page
         UI.addBookToList(aBook);
-    
+        
         UI.clearFields();
+        UI.showAlert('Book added successfully', 'success');
     };
 
 
