@@ -8,20 +8,7 @@ class Book {
 
 class UI {
     static displayBooks() {
-        const storedBooks = [
-            {
-                title: 'Book1',
-                author: 'John',
-                isbn: '12345'
-            },
-            {
-                title: 'Book2',
-                author: 'Bob',
-                isbn: '54321'
-            }
-        ];
-
-        const books = storedBooks;
+        const books = Store.getBooks();
         books.forEach((book) => UI.addBookToList(book));
     };   
     
@@ -69,8 +56,37 @@ class UI {
 
 }
 
+class Store {
+    static getBooks() {
+        let books; // initialise variable called books
+        if (localStorage.getItem('books') === null) {
+            books = [];
+        } else {
+            books = JSON.parse(localStorage.getItem('books'));
+        }
+        return books;
+    }
+
+    static addBook(book) {
+        const books = Store.getBooks();
+        books.push(book);
+        localStorage.setItem('books', JSON.stringify(books));
+    }
+
+    static removeBook(isbn) {
+        const books = Store.getBooks();
+        books.forEach((book, index) => {
+            if (book.isbn === isbn) {
+                books.splice(index, 1)
+            }
+        });
+        localStorage.setItem('books', JSON.stringify(books));
+    }   
+}
+
 document.addEventListener('DOMContentLoaded', UI.displayBooks);
 
+// Add Book
 document.querySelector('#book-form').addEventListener('submit', (e) => {
     e.preventDefault();
     
@@ -85,16 +101,28 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
     } else {
         // instantiate book
         const aBook = new Book(title, author, isbn);
-        // add book to the page
+        // add book to the page (UI)
         UI.addBookToList(aBook);
-        
+
         UI.clearFields();
         UI.showAlert('Book added successfully', 'success');
+
+        // add book to local storage
+        Store.addBook(aBook);
+        
+
     };
 
 
 });
 
+// Remove Book
 document.querySelector('#book-list').addEventListener('click', (e) => {
+    // remove book from UI
     UI.deleteBook(e.target);
+    // remove book from local storage
+    const targetISBN = e.target.parentElement.previousElementSibling.textContent; 
+    console.log(targetISBN);
+    Store.removeBook(targetISBN);
+
 });
