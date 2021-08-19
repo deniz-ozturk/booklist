@@ -1,0 +1,11 @@
+.form-row label {
+    width: 7.5%;
+}
+
+.form-row input {
+    width: 30%;
+}
+
+#fields-container {
+    margin: 2% 0;
+}
